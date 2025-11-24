@@ -20,35 +20,25 @@
     <ul id="chat-box"></ul>
 
     <script>
-        // 마지막으로 받은 메시지의 id
-        let lastId = 0;
-
-        // 신규 메시지 불러오기 (폴링)
-        async function loadNewMessages() {
-            try {
-                const res = await fetch(`/api/chat?lastId=${lastId}`);
-                if (!res.ok) {
-                    console.error("메시지 조회 실패", res.status);
-                    return;
-                }
-
-                const data = await res.json();
-                const box = document.getElementById("chat-box");
-
-                data.forEach(chat => {
-                    // 마지막 id 갱신
-                    lastId = chat.id;
-
-                    const li = document.createElement("li");
-                    li.innerHTML = `<b>${chat.sender}</b>: ${chat.message}`;
-                    box.appendChild(li);
-                });
-
-                // 최신 메시지가 보이도록 스크롤 내리기
-                box.scrollTop = box.scrollHeight;
-            } catch (e) {
-                console.error("loadNewMessages 에러:", e);
+        // 전체 메시지를 매번 새로 불러오기 (폴링)
+        async function loadMessages() {
+            const res = await fetch("/api/chat");
+            if (!res.ok) {
+                console.error("메시지 조회 실패", res.status);
+                return;
             }
+
+            const data = await res.json();
+            const box = document.getElementById("chat-box");
+
+            // 최신 목록으로 교체
+            box.innerHTML = "";
+
+            data.forEach(chat => {
+                const li = document.createElement("li");
+                li.innerHTML = `<b>${chat.sender}</b>: ${chat.message}`;
+                box.appendChild(li);
+            });
         }
 
         // 메시지 전송
@@ -64,26 +54,25 @@
                 return;
             }
 
-            try {
-                await fetch("/api/chat", {
-                    method: "POST",
-                    headers: { "Content-Type": "application/json" },
-                    body: JSON.stringify({ sender, message })
-                });
+            await fetch("/api/chat", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ sender, message })
+            });
 
-                // 입력창 비우기
-                messageInput.value = "";
-                messageInput.focus();
-            } catch (e) {
-                console.error("sendMessage 에러:", e);
-            }
+            // 입력창 비우기
+            messageInput.value = "";
+            messageInput.focus();
+
+            // 전송 후 최신 목록 재조회
+            loadMessages();
         }
 
         // 최초 1번 호출 (처음 들어왔을 때 기존 메시지 로딩)
-        loadNewMessages();
+        loadMessages();
 
-        // 이후 2초마다 신규 메시지만 폴링
-        setInterval(loadNewMessages, 2000);
+        // 이후 2초마다 전체 목록 재조회
+        setInterval(loadMessages, 2000);
     </script>
 
 </body>

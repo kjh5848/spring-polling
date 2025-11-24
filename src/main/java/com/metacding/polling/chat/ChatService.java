@@ -28,11 +28,4 @@ public class ChatService {
     public List<Chat> findAll() {
         return chatRepository.findAllByOrderByIdAsc();
     }
-
-    public List<Chat> findAfter(Integer lastId) {
-        if (lastId == null) {
-            return findAll();
-        }
-        return chatRepository.findByIdGreaterThanOrderByIdAsc(lastId);
-    }
 }
