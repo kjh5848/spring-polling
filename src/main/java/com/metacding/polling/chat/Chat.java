@@ -1,14 +1,16 @@
 package com.metacding.polling.chat;
 
-import java.time.LocalDateTime;
-
-import jakarta.persistence.*;
+import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.persistence.Table;
+import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
-
-@NoArgsConstructor
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Getter
 @Table(name = "chat_tb")
 @Entity
@@ -18,15 +20,11 @@ public class Chat {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
 
-    private String sender;
     private String message;
-    private LocalDateTime createdAt;
 
     @Builder
-    public Chat(Integer id, String sender, String message, LocalDateTime createdAt) {
+    public Chat(Integer id, String message) {
         this.id = id;
-        this.sender = sender;
         this.message = message;
-        this.createdAt = createdAt;
     }
 }

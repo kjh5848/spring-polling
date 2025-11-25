@@ -17,25 +17,31 @@ public class ChatController {
 
     private final ChatService chatService;
 
-    // UI 제공
     @GetMapping("/")
     public String index() {
-        return "chat"; // chat.mustache
+        return "index";
     }
 
-    // 메시지 저장 (JS fetch)
-    @PostMapping("/api/chat")
+    /*
+     * 메세지 저장
+     */
+    @PostMapping("/chats")
     @ResponseBody
     public ResponseEntity<Chat> save(@RequestBody ChatRequest req) {
-        Chat saved = chatService.save(req.getSender(), req.getMessage());
+        Chat saved = chatService.save(req);
         return ResponseEntity.ok(saved);
     }
 
-    // Polling 메시지 GET
-    @GetMapping("/api/chat")
+    /*
+     * 메세지 list조회
+     */
+    @GetMapping("/chats")
     @ResponseBody
     public ResponseEntity<List<Chat>> list() {
         List<Chat> chats = chatService.findAll();
+        chats.forEach(chat -> {
+            System.out.println("id=" + chat.getId() + ", msg=" + chat.getMessage());
+        });
         return ResponseEntity.ok(chats);
     }
 }

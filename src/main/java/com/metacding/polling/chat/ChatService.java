@@ -1,8 +1,8 @@
 package com.metacding.polling.chat;
 
-import java.time.LocalDateTime;
 import java.util.List;
 
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -14,18 +14,18 @@ public class ChatService {
 
     private final ChatRepository chatRepository;
 
+    // POST /chats에서 들어온 메시지를 저장
     @Transactional
-    public Chat save(String sender, String message) {
+    public Chat save(ChatRequest req) {
         Chat chat = Chat.builder()
-                .sender(sender)
-                .message(message)
-                .createdAt(LocalDateTime.now())
+                .message(req.message())
                 .build();
-
         return chatRepository.save(chat);
     }
 
+    // 폴링 요청 시 최신순으로 전체 메시지 조회
     public List<Chat> findAll() {
-        return chatRepository.findAllByOrderByIdAsc();
+        Sort desc = Sort.by(Sort.Direction.DESC, "id");
+        return chatRepository.findAll(desc);
     }
 }
