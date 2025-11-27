@@ -22,10 +22,6 @@
         //  클라이언트 폴링: 일정 주기로 /chats에 GET 요청하여 전체 메시지 재로딩
         async function loadMessages() {
             const res = await fetch("/chats");
-            if (!res.ok) {
-                console.error("메시지 조회 실패", res.status);
-                return;
-            }
 
             const data = await res.json();
             const box = document.getElementById("chat-box");
