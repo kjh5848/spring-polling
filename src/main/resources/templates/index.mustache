@@ -19,7 +19,7 @@
     <ul id="chat-box"></ul>
 
     <script>
-        // (2) 클라이언트 폴링: 일정 주기로 /chats에 GET 요청하여 전체 메시지 재로딩
+        //  클라이언트 폴링: 일정 주기로 /chats에 GET 요청하여 전체 메시지 재로딩
         async function loadMessages() {
             const res = await fetch("/chats");
             if (!res.ok) {
@@ -39,7 +39,7 @@
                 box.appendChild(li);
             });
         }
-        // (4) 메시지 전송: 저장 후 바로 (2) 재호출
+        //  메시지 전송: 저장 후 바로 (2) 재호출
         async function sendMessage() {
             const messageInput = document.getElementById("message");
 
@@ -59,10 +59,10 @@
             loadMessages();
         }
 
-        // (2-0) 최초 1회 호출: 초기 입장 시 기존 메시지 로딩
+        // 최초 1회 호출: 초기 입장 시 기존 메시지 로딩
         loadMessages();
 
-        // (2-1) 이후 2초마다 반복 폴링
+        // 이후 2초마다 반복 폴링
         setInterval(loadMessages, 2000);
     </script>
 
